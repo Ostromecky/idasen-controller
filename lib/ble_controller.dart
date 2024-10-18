@@ -9,12 +9,12 @@ import 'device.dart';
 class BleController {
   final BehaviorSubject<Device?> _connectedDeviceSubject =
       BehaviorSubject<Device?>();
-  bool _isEnabled = false;
+  // bool _isEnabled = false;
 
   Stream<List<Device>> scan({int duration = 10}) {
-    if (!_isEnabled) {
-      return Stream.error('Bluetooth is not enabled');
-    }
+    // if (!_isEnabled) {
+    //   return Stream.error('Bluetooth is not enabled');
+    // }
     FlutterBluePlus.startScan(timeout: Duration(seconds: duration));
 
     return FlutterBluePlus.onScanResults.map((results) {

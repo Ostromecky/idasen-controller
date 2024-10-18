@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hold_down_button/hold_down_button.dart';
 import 'package:provider/provider.dart';
 
-import 'app_state.dart';
+import 'device_state.dart';
 
 class DeskControls extends StatelessWidget {
   const DeskControls({super.key});
