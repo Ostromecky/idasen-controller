@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hold_down_button/hold_down_button.dart';
+import 'package:idasen_controller/counter_text.dart';
 import 'package:provider/provider.dart';
 
 import 'device_state.dart';
@@ -17,8 +18,30 @@ class DeskControls extends StatelessWidget {
           children: [
             deviceState.currentPosition == null
                 ? const SizedBox(height: 24)
-                : Text('${deviceState.currentPosition} cm',
-                    style: Theme.of(context).textTheme.titleLarge),
+                : Text.rich(TextSpan(
+                    text: '',
+                    style: Theme.of(context).textTheme.titleLarge,
+                    children: [
+                      WidgetSpan(
+                        child: CounterText(
+                          value: deviceState.currentPosition!,
+                          initValue: 0,
+                          duration: const Duration(milliseconds: 200),
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' ',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      TextSpan(
+                        text: 'cm',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
+                  )),
+            // : Text('${deviceState.currentPosition} cm',
+            //     style: Theme.of(context).textTheme.titleLarge),
             FloatingActionButton.small(
               onPressed: () {
                 deviceState.scan();

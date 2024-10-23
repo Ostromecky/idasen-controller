@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:idasen_controller/app_state.dart';
 import 'package:idasen_controller/ble_controller.dart';
-import 'package:idasen_controller/device.dart';
-import 'package:idasen_controller/onboard_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'desk_controls.dart';
 import 'device_state.dart';
+import 'onboard_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,9 +40,7 @@ class MyApp extends StatelessWidget {
             bodySmall: GoogleFonts.lato(
               color: Colors.black54,
             ),
-            displaySmall: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold
-            ),
+            displaySmall: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             displayLarge: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
             ),
@@ -68,46 +65,40 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: MyHomePage(),
+        home: const MyHomePage(),
       ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    var deviceState = context.watch<DeviceState>();
     var appState = context.watch<AppState>();
 
-    void connect(Device device) {
-      deviceState.connect(device);
-    }
-
     return Scaffold(
-      appBar: appState.firstVisit
+      appBar: appState.isFirstVisit
           ? null
           : AppBar(
-              title: Text(deviceState.currentDeviceName),
+              title: Consumer<DeviceState>(
+                  builder: (_, deviceState, __) =>
+                      Text(deviceState.currentDeviceName)),
             ),
-      body: appState.firstVisit
+      body: appState.isFirstVisit
           ? const OnboardScreen()
-          : Stack(
-              // fit: StackFit.expand,
-              children: [
-                ListView(
-                  children: [
-                    ...deviceState.devices.map((device) => ListTile(
-                          title: Text(device.name != ''
-                              ? device.name
-                              : device.id.toString()),
-                          onTap: () => connect(device),
-                        ))
-                  ],
-                ),
-                const DeskControls()
-              ],
-            ),
+          : const Stack(fit: StackFit.expand, children: [
+              // Column(
+              //   children: [
+              //     Expanded(
+              //       child: Text(''),
+              //     ),
+              //     //
+              //   ],
+              // ),
+              DeskControls()
+            ]),
     );
   }
 }

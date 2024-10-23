@@ -26,7 +26,6 @@ class DeviceState with ChangeNotifier {
         '';
   }
 
-
   DeviceState({required BleController bleController})
       : _bleController = bleController {
     _init();
@@ -65,7 +64,7 @@ class DeviceState with ChangeNotifier {
     var remoteId = _sharedPreferences?.getString(_deviceIdToken);
     var platformName = _sharedPreferences?.getString(_platformNameToken);
 
-    if(!_isNullOrEmpty(platformName)) {
+    if (!_isNullOrEmpty(platformName)) {
       notifyListeners();
     }
 
@@ -157,9 +156,9 @@ class DeviceState with ChangeNotifier {
 
   @override
   void dispose() {
+    super.dispose();
     _destroy.add(null);
     _destroy.close();
-    super.dispose();
   }
 
   _isNullOrEmpty(String? value) {
