@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:idasen_controller/app_state.dart';
 import 'package:idasen_controller/ble_controller.dart';
+import 'package:idasen_controller/screens/controller_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'bottom_bar.dart';
-import 'desk_controls.dart';
 import 'device_state.dart';
 import 'onboard_screen.dart';
 
@@ -72,41 +72,70 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Map<String, Widget>> _pages = [
+    {
+      'page': const ControllerScreen(),
+    },
+    {
+      'page': const Scaffold(
+        body: Center(
+          child: Text('Page 2'),
+        ),
+      ),
+    },
+    {
+      'page': const Scaffold(
+        body: Center(
+          child: Text('Page 3'),
+        ),
+      ),
+    },
+  ];
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<AppState>();
 
-    return Scaffold(
-      appBar: appState.isFirstVisit
-          ? null
-          : AppBar(
-              title: Consumer<DeviceState>(
-                  builder: (_, deviceState, __) =>
-                      Text(deviceState.currentDeviceName)),
-              bottom: const PreferredSize(
-                  preferredSize: Size.fromHeight(4.0), child: DeviceStatus())),
-      body: appState.isFirstVisit
-          ? const OnboardScreen()
-          : const Stack(fit: StackFit.expand, children: [DeskControls()]),
-      floatingActionButton: !appState.isFirstVisit
-          ? FloatingActionButton(
+    return appState.isFirstVisit
+        ? const Scaffold(
+            body: OnboardScreen(),
+          )
+        : Scaffold(
+            appBar: AppBar(
+                title: Consumer<DeviceState>(
+                    builder: (_, deviceState, __) =>
+                        Text(deviceState.currentDeviceName)),
+                bottom: const PreferredSize(
+                    preferredSize: Size.fromHeight(4.0),
+                    child: DeviceStatus())),
+            body: _pages[_selectedIndex]['page']!,
+            floatingActionButton: FloatingActionButton(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               onPressed: () {},
               backgroundColor: Theme.of(context).colorScheme.secondary,
               child: const Icon(Icons.add, color: Colors.white),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: appState.isFirstVisit
-          ? null
-          : BottomNavBar(
-              selectedIndex: 0,
-              onTap: (index) {},
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            bottomNavigationBar: BottomNavBar(
+              selectedIndex: _selectedIndex,
+              onTap: (index) {
+                print('index: $index');
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
               items: [
                 NavItem(
                   icon: Icons.message_outlined,
@@ -117,7 +146,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ],
             ),
-    );
+          );
   }
 }
 

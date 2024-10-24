@@ -2,18 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends StatefulWidget {
   final List<Widget> items;
   final int selectedIndex;
   final ValueChanged<int> onTap;
-  final _padding = 8.0;
-  final _heightBaseline = 48.0;
-  final _lineHeight = 17;
-
-  get _height =>
-      items.where((item) => item is NavItem && item.label != null).isNotEmpty
-          ? (_heightBaseline + _padding * 2) + _lineHeight
-          : _heightBaseline + _padding * 2;
 
   BottomNavBar({
     super.key,
@@ -21,6 +13,28 @@ class BottomNavBar extends StatelessWidget {
     required this.onTap,
     required this.items,
   });
+
+  @override
+  State<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
+  final _padding = 8.0;
+  final _heightBaseline = 48.0;
+  final _lineHeight = 17;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
+  }
+
+  get _height => widget.items
+          .where((item) => item is NavItem && item.label != null)
+          .isNotEmpty
+      ? (_heightBaseline + _padding * 2) + _lineHeight
+      : _heightBaseline + _padding * 2;
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +54,20 @@ class BottomNavBar extends StatelessWidget {
         shape: const CircularNotchedRectangle(),
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: List.generate(items.length, (index) {
-              final item = items[index];
-              final isSelected = selectedIndex == index;
+            children: List.generate(widget.items.length, (index) {
+              final item = widget.items[index];
+              final isSelected = _selectedIndex == index;
               return item is NavItem
                   ? Expanded(
                       child: InkWell(
                         // radius: 100,
                         customBorder: const CircleBorder(),
-                        onTap: () => onTap(index),
+                        onTap: () => {
+                          widget.onTap(index),
+                          setState(() {
+                            _selectedIndex = index;
+                          })
+                        },
                         child: Padding(
                           padding: EdgeInsets.all(_padding),
                           child: Column(
