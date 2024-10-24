@@ -26,6 +26,8 @@ class DeviceState with ChangeNotifier {
         '';
   }
 
+  bool get connected => currentDevice != null;
+
   DeviceState({required BleController bleController})
       : _bleController = bleController {
     _init();

@@ -4,6 +4,7 @@ import 'package:idasen_controller/app_state.dart';
 import 'package:idasen_controller/ble_controller.dart';
 import 'package:provider/provider.dart';
 
+import 'bottom_bar.dart';
 import 'desk_controls.dart';
 import 'device_state.dart';
 import 'onboard_screen.dart';
@@ -85,20 +86,62 @@ class MyHomePage extends StatelessWidget {
               title: Consumer<DeviceState>(
                   builder: (_, deviceState, __) =>
                       Text(deviceState.currentDeviceName)),
-            ),
+              bottom: const PreferredSize(
+                  preferredSize: Size.fromHeight(4.0), child: DeviceStatus())),
       body: appState.isFirstVisit
           ? const OnboardScreen()
-          : const Stack(fit: StackFit.expand, children: [
-              // Column(
-              //   children: [
-              //     Expanded(
-              //       child: Text(''),
-              //     ),
-              //     //
-              //   ],
-              // ),
-              DeskControls()
-            ]),
+          : const Stack(fit: StackFit.expand, children: [DeskControls()]),
+      floatingActionButton: !appState.isFirstVisit
+          ? FloatingActionButton(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              onPressed: () {},
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: appState.isFirstVisit
+          ? null
+          : BottomNavBar(
+              selectedIndex: 0,
+              onTap: (index) {},
+              items: [
+                NavItem(
+                  icon: Icons.message_outlined,
+                ),
+                const SizedBox(width: 80),
+                NavItem(
+                  icon: Icons.person_outline,
+                ),
+              ],
+            ),
     );
+  }
+}
+
+class DeviceStatus extends StatelessWidget {
+  const DeviceStatus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DeviceState>(
+        builder: (_, deviceState, __) => Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    color: deviceState.connected ? Colors.green : Colors.amber,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Text(deviceState.connected ? 'Active' : 'Non-Active'),
+              ],
+            ));
   }
 }

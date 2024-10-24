@@ -40,21 +40,6 @@ class DeskControls extends StatelessWidget {
                       ),
                     ],
                   )),
-            // : Text('${deviceState.currentPosition} cm',
-            //     style: Theme.of(context).textTheme.titleLarge),
-            FloatingActionButton.small(
-              onPressed: () {
-                deviceState.scan();
-              },
-              shape: const CircleBorder(),
-              child: const Icon(Icons.refresh),
-            ),
-            // FloatingActionButton.small(onPressed: () {
-            //   deviceState.disconnect();
-            // },
-            //   shape: const CircleBorder(),
-            //   child: const Icon(Icons.bluetooth_disabled),
-            // ),
             const SizedBox(height: 16),
             HoldDownButton(
               onHoldDown: () async {
@@ -72,6 +57,7 @@ class DeskControls extends StatelessWidget {
                 child: const Icon(Icons.add),
               ),
             ),
+            const SizedBox(height: 4),
             HoldDownButton(
               onHoldDown: () async {
                 await deviceState.moveDown();
@@ -88,7 +74,7 @@ class DeskControls extends StatelessWidget {
                 child: const Icon(Icons.remove),
               ),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 16),
           ],
         ),
       );
